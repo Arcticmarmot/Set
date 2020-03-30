@@ -1,0 +1,109 @@
+22、集合操作
+一、问题描述：
+设计一个处理集合的类，用来处理整型数，要求具有如下功能：
+1.具有为集合增加元素的功能
+2.具有处理集合的交集、并集的功能，并用 “+” 表示并集， “*” 表示交集
+3.要求用链表来存储集合的元素
+4.编写一个 main()函数，测试你的集合类的各种功能。
+二、设计说明
+1.定义一个集合类，对操作符＋，－进行重载。
+2.可以使用链表
+int* p;
+	this->head = (Node*)malloc(sizeof(Node));
+	Node* np = this->head;
+	for (p = begin; p != end; p++) {
+		if (p == end - 1) {
+			np->next = nullptr;
+			np->value = *p;
+		}else {
+			np->next = (Node*)malloc(sizeof(Node));
+			np->value = *p;
+			np = np->next;
+		}
+	}
+#include <iostream>
+#include "list.h"
+#include "node.h"
+
+using namespace std;
+List::List() {
+	this->head = nullptr;
+}
+List::List(int* begin, int* end) {
+	this->head = nullptr;
+	int* p;
+	for (p = begin; p != end; p++) {
+		this->insert(*p);
+	}
+}
+void List::insert(int v) {
+	Node* np = (Node*)malloc(sizeof(Node));
+	np->value = v;
+	if (this->checkDuplicate(np)) {
+		cout << "---Insert fail, element already exists." << endl;
+		return;
+	}
+	Node* temp = this->head;
+	this->head = np;
+	np->next = temp;
+	cout << "---Insert succeed." << endl;
+}
+
+void List::remove(int v) {
+	if (this->head->value == v) {
+		this->head = this->head->next;
+		cout << "---Remove succeed." << endl;
+		return;
+	}
+	for (Node* i = this->head; i->next != nullptr; i = i->next) {
+		if (i->next->value == v) {
+			i->next = i->next->next;
+			cout << "---Remove succeed." << endl;
+			return;
+		}
+	}
+	cout << "---Remove fail, element not found." << endl;
+}
+
+bool List::checkDuplicate(Node* np) {
+	for (Node* i = this->head; i != nullptr; i = i->next) {
+		if (i->value == np->value) {
+			return true;
+		}
+	}
+	return false;
+}
+void List::show() {
+	cout << "{ ";
+	for (Node* i = this->head; i != nullptr; i = i->next) {
+		cout << i->value <<" ";
+	}
+	cout << "}";
+	cout << endl;
+	cout << "--------------------------------"<<endl;
+}
+int List::getLength() {
+	int sum = 0;
+	for (Node* i = this->head; i != nullptr; i = i->next) {
+		sum++;
+	}
+	return sum;
+}
+int* List::getArray() {
+	int* a = (int*)malloc(sizeof(int)*this->getLength());
+	Node* i = this->head;
+	for (int index = 0;  i != nullptr; i = i->next, index++) {
+		a[index] = i->value;
+	}
+	return a;
+}
+void List::clear(){
+	this->head = nullptr;
+}
+void List::setArray(int* begin, int* end) {
+	this->head = nullptr;
+	int* p;
+	for (p = begin; p != end; p++) {
+		this->insert(*p);
+	}
+}
